@@ -41,10 +41,15 @@ export async function getPlayerStats(match: Match): Promise<void | string[][]> {
             res.push(i === 0 ? match.home : match.away); // player team
             res.push(`${match.home} vs ${match.away}`); // match
             res.push(
-              i === 0 && parseInt(result[0]) > parseInt(result[1])
-                ? "WIN"
-                : "LOSS"
+              i === 0
+                ? parseInt(result[0]) > parseInt(result[1])
+                  ? "Win"
+                  : "Loss"
+                : parseInt(result[1]) > parseInt(result[0])
+                  ? "Win"
+                  : "Loss"
             ); // win/loss
+
             res.push(match.date); // date
             ans.push(res);
           });
