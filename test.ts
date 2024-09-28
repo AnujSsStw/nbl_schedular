@@ -1,4 +1,7 @@
 import { update_sheet } from "./convex/sheets";
+import { getSchedule } from "./convex/utils";
+
+/*
 
 await update_sheet(
   [
@@ -678,6 +681,12 @@ await update_sheet(
       "2023-09-28",
     ],
   ],
-  "Melbourne United vs South East Melbourne Phoenix 2023-09-28",
   2023
+);
+**/
+
+console.log(
+  await getSchedule(
+    "https://www.proballers.com/basketball/league/226/australia-nbl/schedule"
+  )
 );

@@ -17,6 +17,8 @@ export const send = internalAction({
   },
   handler: async (ctx, args) => {
     const stats = await getPlayerStats(args);
+    console.log("Args:", args);
+
     if (!stats) {
       // Retry with a higher delay
       const date = convertToDatetime(
