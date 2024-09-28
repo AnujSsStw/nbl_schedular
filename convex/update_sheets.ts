@@ -12,6 +12,7 @@ export const send = internalAction({
     away: v.string(),
     result: v.string(),
     matchLink: v.string(),
+    year: v.number(),
   },
   handler: async (ctx, args) => {
     const stats = await getPlayerStats(args);
@@ -21,7 +22,7 @@ export const send = internalAction({
 
     const title = `${args.home} vs ${args.away} ${args.date}`;
     try {
-      await update_sheet(stats, title);
+      await update_sheet(stats, title, args.year);
     } catch (error) {
       console.error("Error:", error);
     }

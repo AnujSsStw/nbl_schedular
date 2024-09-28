@@ -137,18 +137,18 @@ export function convertToDatetime(
   }
 }
 
-// getSchedule(`${baseUrl}/basketball/league/226/australia-nbl/schedule`).then(
-//   async (schedule) => {
-//     if (schedule === null) {
-//       console.log("Failed to retrieve schedule");
-//       return;
-//     }
-
-//     for (const game of schedule) {
-//       const s = await getPlayerStats(game);
-//       console.log(s);
-
-//       break;
-//     }
+// getSchedule(
+//   `${baseUrl}/basketball/league/226/australia-nbl/schedule/2023`
+// ).then(async (schedule) => {
+//   if (schedule === null) {
+//     console.log("Failed to retrieve schedule");
+//     return;
 //   }
-// );
+
+//   for (const game of schedule) {
+//     const s = await getPlayerStats(game);
+//     console.log(s);
+
+//     break;
+//   }
+// });
