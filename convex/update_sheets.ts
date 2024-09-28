@@ -1,8 +1,9 @@
 "use node";
 import { v } from "convex/values";
 import { internalAction } from "./_generated/server";
-import { getPlayerStats } from "./utils";
+import { convertToDatetime, getPlayerStats } from "./utils";
 import { update_sheet } from "./sheets";
+import { internal } from "./_generated/api";
 
 export const send = internalAction({
   args: {
@@ -17,14 +18,20 @@ export const send = internalAction({
   handler: async (ctx, args) => {
     const stats = await getPlayerStats(args);
     if (!stats) {
-      return "Failed to retrieve stats";
+      // Retry with a higher delay
+      const date = convertToDatetime(
+        `${args.date},${args.time}`,
+        "timestamp",
+        24
+      ) as number;
+      await ctx.scheduler.runAfter(date, internal.update_sheets.send, args);
+      return "Failed to retrieve stats so schedule a retry with higher delay";
     }
 
-    const title = `${args.home} vs ${args.away} ${args.date}`;
     try {
-      await update_sheet(stats, title, args.year);
+      await update_sheet(stats, args.year);
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error at the upadte_sheets function:", error);
     }
 
     return "Done";

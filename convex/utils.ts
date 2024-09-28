@@ -1,6 +1,6 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
-import moment from "moment";
+import moment from "moment-timezone";
 
 export const baseUrl = "https://www.proballers.com";
 
@@ -60,7 +60,7 @@ export async function getPlayerStats(match: Match): Promise<void | string[][]> {
       console.log(`Failed to retrieve page. Status code: ${response.status}`);
     }
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Error in getting stats:", error);
   }
 }
 
@@ -116,39 +116,24 @@ export async function getSchedule(url: string): Promise<Match[] | null> {
       return null;
     }
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Error in getting schedule:", error);
     return null;
   }
 }
 export function convertToDatetime(
   datetimeStr: string,
-  returnType: "timestamp" | "date" = "timestamp"
+  returnType: "timestamp" | "date" = "timestamp",
+  delay: number = 0
 ): number | Date {
-  const datetimeObj = moment(datetimeStr, "YYYY-MM-DD,hh:mm A");
+  const datetimeObj = moment.tz(datetimeStr, "YYYY-MM-DD,hh:mm A", "CET");
 
-  // Add 1 hour and 30 minutes
-  const newDatetimeObj = datetimeObj.add(1, "hours").add(30, "minutes");
+  // Add 2 hours
+  const utcDatetimeObj = datetimeObj.utc().add(delay, "hours");
 
   // Return based on the specified type
   if (returnType === "timestamp") {
-    return newDatetimeObj.valueOf(); // Returns milliseconds since epoch
+    return utcDatetimeObj.valueOf(); // Returns milliseconds since epoch
   } else {
-    return newDatetimeObj.toDate(); // Returns a JavaScript Date object
+    return utcDatetimeObj.toDate(); // Returns a JavaScript Date object
   }
 }
-
-// getSchedule(
-//   `${baseUrl}/basketball/league/226/australia-nbl/schedule/2023`
-// ).then(async (schedule) => {
-//   if (schedule === null) {
-//     console.log("Failed to retrieve schedule");
-//     return;
-//   }
-
-//   for (const game of schedule) {
-//     const s = await getPlayerStats(game);
-//     console.log(s);
-
-//     break;
-//   }
-// });

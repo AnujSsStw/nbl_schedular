@@ -16,6 +16,7 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as schedular from "../schedular.js";
+import type * as schedule_timezone_test from "../schedule_timezone_test.js";
 import type * as sheets from "../sheets.js";
 import type * as update_sheets from "../update_sheets.js";
 import type * as utils from "../utils.js";
@@ -30,6 +31,7 @@ import type * as utils from "../utils.js";
  */
 declare const fullApi: ApiFromModules<{
   schedular: typeof schedular;
+  schedule_timezone_test: typeof schedule_timezone_test;
   sheets: typeof sheets;
   update_sheets: typeof update_sheets;
   utils: typeof utils;

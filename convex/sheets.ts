@@ -9,7 +9,6 @@ import { JWT } from "google-auth-library";
 // the params is going to be an 2d array of values with i=0 being the header and i=1 being the values
 export async function update_sheet(
   stats: string[][],
-  title: string,
   year: number
 ): Promise<void> {
   // Initialize auth - see https://theoephraim.github.io/node-google-spreadsheet/#/guides/authentication
@@ -26,7 +25,11 @@ export async function update_sheet(
     serviceAccountAuth
   );
 
-  await doc.loadInfo(); // loads document properties and worksheets
+  try {
+    await doc.loadInfo(); // loads document properties and worksheets
+  } catch (error) {
+    console.log("ERROR IN LOADING SHEET INFO", error);
+  }
 
   // removing the 2, 3, 4nd pts column as it is a duplicate from all the other columns
   for (let i = 0; i < stats.length; i++) {
@@ -57,7 +60,6 @@ export async function update_sheet(
       year.toString(), // Date Session
     ]);
   }
-  console.log(newData[1]);
   stats = [];
 
   try {
@@ -79,6 +81,7 @@ export async function update_sheet(
     // save it
     await data.saveUpdatedCells();
   } catch (error) {
-    console.log(error);
+    console.log("ERROR RELATED TO UPDATE IN SHEETS", error);
+    console.log("THE GIVEN DATA AT TIME IS: ", newData);
   }
 }

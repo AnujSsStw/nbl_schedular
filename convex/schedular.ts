@@ -17,7 +17,11 @@ export const create_nba_schedule = internalAction({
 
     let delay = 0;
     for (const game of s) {
-      const date = convertToDatetime(`${game.date},${game.time}`) as number;
+      const date = convertToDatetime(
+        `${game.date},${game.time}`,
+        "timestamp",
+        9
+      ) as number;
 
       // if the date is in the past, run the action immediately with a delay of 1/2 minute increment
       if (date < Date.now()) {
@@ -25,6 +29,7 @@ export const create_nba_schedule = internalAction({
           ...game,
           year,
         });
+        console.log("Ran immediately", game);
         delay += 30000;
       } else {
         await ctx.scheduler.runAt(date, internal.update_sheets.send, {
