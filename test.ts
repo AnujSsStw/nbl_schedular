@@ -1,5 +1,5 @@
 import { update_sheet } from "./convex/sheets";
-import { getSchedule } from "./convex/utils";
+import { getPlayerStats, getSchedule } from "./convex/utils";
 
 /*
 
@@ -685,8 +685,26 @@ await update_sheet(
 );
 **/
 
+/*
 console.log(
   await getSchedule(
     "https://www.proballers.com/basketball/league/226/australia-nbl/schedule"
   )
 );
+
+**/
+
+/*
+const stats = await getPlayerStats({
+  away: "Illawarra Hawks",
+  date: "2024-09-29",
+  home: "Sydney Kings",
+  matchLink:
+    "https://www.proballers.com/basketball/game-preview/789829/sydney-kings-illawarra-hawks-2024-09-29",
+  result: "Game preview",
+  time: "3:30 AM",
+});
+
+console.log(stats);
+
+**/

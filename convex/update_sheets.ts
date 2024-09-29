@@ -20,7 +20,7 @@ export const send = internalAction({
     console.log("Args:", args);
 
     if (!stats) {
-      return "Failed to retrieve stats so schedule a retry with higher delay";
+      return "Failed to retrieve stats";
     }
 
     try {
@@ -32,9 +32,11 @@ export const send = internalAction({
       const date = convertToDatetime(
         `${args.date},${args.time}`,
         "timestamp",
-        24
+        1
       ) as number;
-      await ctx.scheduler.runAfter(date, internal.update_sheets.send, args);
+      console.log(date);
+
+      await ctx.scheduler.runAt(date, internal.update_sheets.send, args);
     }
 
     return "Done";

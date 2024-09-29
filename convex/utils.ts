@@ -128,7 +128,7 @@ export function convertToDatetime(
   const datetimeObj = moment.tz(datetimeStr, "YYYY-MM-DD,hh:mm A", "CET");
 
   // Add 2 hours
-  const utcDatetimeObj = datetimeObj.utc().add(delay, "hours");
+  const utcDatetimeObj = datetimeObj.utc().add(delay, "day");
 
   // Return based on the specified type
   if (returnType === "timestamp") {
