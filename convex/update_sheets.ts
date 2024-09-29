@@ -27,7 +27,7 @@ export const send = internalAction({
       await update_sheet(stats, args.year);
     } catch (error) {
       console.error("Error at the upadte_sheets function:", error);
-      console.log("Retrying in 24 hours");
+      console.log("Retrying in 24 hours with stats:", stats);
       // Retry with a higher delay
       const date = convertToDatetime(
         `${args.date},${args.time}`,
