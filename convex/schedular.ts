@@ -6,13 +6,18 @@ import { baseUrl, convertToDatetime, getSchedule } from "./utils";
 export const create_nba_schedule = internalAction({
   args: {
     year: v.number(),
+    skip: v.number(),
   },
-  handler: async (ctx, { year }) => {
+  handler: async (ctx, { year, skip }) => {
     const s = await getSchedule(
       `${baseUrl}/basketball/league/226/australia-nbl/schedule/${year}`
     );
     if (s === null) {
       return "Failed to retrieve schedule";
+    }
+
+    if (skip) {
+      s.splice(0, skip);
     }
 
     let delay = 0;
