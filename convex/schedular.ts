@@ -25,7 +25,8 @@ export const create_nba_schedule = internalAction({
       const date = convertToDatetime(
         `${game.date},${game.time}`,
         "timestamp",
-        9
+        9,
+        "hours"
       ) as number;
 
       // if the date is in the past, run the action immediately with a delay of 1/2 minute increment

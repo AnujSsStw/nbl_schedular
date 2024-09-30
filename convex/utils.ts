@@ -123,12 +123,13 @@ export async function getSchedule(url: string): Promise<Match[] | null> {
 export function convertToDatetime(
   datetimeStr: string,
   returnType: "timestamp" | "date" = "timestamp",
-  delay: number = 0
+  delay: number = 0,
+  delayType: "day" | "hours" = "day"
 ): number | Date {
   const datetimeObj = moment.tz(datetimeStr, "YYYY-MM-DD,hh:mm A", "CET");
 
   // Add 2 hours
-  const utcDatetimeObj = datetimeObj.utc().add(delay, "day");
+  const utcDatetimeObj = datetimeObj.utc().add(delay, delayType);
 
   // Return based on the specified type
   if (returnType === "timestamp") {
