@@ -16,6 +16,11 @@ export const send = internalAction({
     year: v.number(),
   },
   handler: async (ctx, args) => {
+    if (args.matchLink.includes("game-preview")) {
+      args.matchLink = args.matchLink.replace("game-preview", "game");
+      console.log("Updated matchLink:", args.matchLink);
+    }
+
     const stats = await getPlayerStats(args);
     console.log("Args:", args);
 
@@ -24,10 +29,6 @@ export const send = internalAction({
     }
 
     try {
-      if (args.matchLink.includes("game-preview")) {
-        args.matchLink = args.matchLink.replace("game-preview", "game");
-        console.log("Updated matchLink:", args.matchLink);
-      }
       await update_sheet(stats, args.year);
     } catch (error) {
       console.error("Error at the upadte_sheets function:", error);
