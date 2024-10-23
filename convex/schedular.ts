@@ -6,45 +6,45 @@ import { baseUrl, convertToDatetime, getSchedule } from "./utils";
 export const create_nba_schedule = internalAction({
   args: {
     year: v.number(),
-    skip: v.number(),
+    skip: v.optional(v.number()),
   },
-  handler: async (ctx, { year, skip }) => {
-    const s = await getSchedule(
-      `${baseUrl}/basketball/league/226/australia-nbl/schedule/${year}`
-    );
-    if (s === null) {
-      return "Failed to retrieve schedule";
+  handler: async (ctx, { year, skip = 0 }) => {
+    const scheduleUrl = `${baseUrl}/basketball/league/226/australia-nbl/schedule/${year}`;
+    const schedule = await getSchedule(scheduleUrl);
+    
+    if (schedule === null) {
+      throw new Error("Failed to retrieve schedule");
     }
 
-    if (skip) {
-      s.splice(0, skip);
-    }
+    const scheduledGames = schedule.slice(skip);
 
     let delay = 0;
-    for (const game of s) {
-      const date = convertToDatetime(
+    const currentTime = Date.now();
+
+    for (const game of scheduledGames) {
+      const gameDate = convertToDatetime(
         `${game.date},${game.time}`,
         "timestamp",
         9,
         "hours"
       ) as number;
 
-      // if the date is in the past, run the action immediately with a delay of 1/2 minute increment
-      if (date < Date.now()) {
-        await ctx.scheduler.runAfter(delay + 0, internal.update_sheets.send, {
+      if (gameDate < currentTime) {
+        await ctx.scheduler.runAfter(delay, internal.update_sheets.send, {
           ...game,
           year,
         });
-        console.log("Ran immediately", game);
-        delay += 30000;
+        console.log("Scheduled for immediate run:", game);
+        delay += 30000; // 30 seconds
       } else {
-        await ctx.scheduler.runAt(date, internal.update_sheets.send, {
+        await ctx.scheduler.runAt(gameDate, internal.update_sheets.send, {
           ...game,
           year,
         });
+        console.log("Scheduled for future run:", game);
       }
     }
 
-    return "Scheduled";
+    return `Scheduled ${scheduledGames.length} games`;
   },
 });

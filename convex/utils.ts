@@ -41,13 +41,16 @@ export async function getPlayerStats(match: Match): Promise<void | string[][]> {
             res.push(i === 0 ? match.home : match.away); // player team
             res.push(`${match.home} vs ${match.away}`); // match
             res.push(
-              i === 0
-                ? parseInt(result[0]) > parseInt(result[1])
-                  ? "Win"
-                  : "Loss"
-                : parseInt(result[1]) > parseInt(result[0])
-                  ? "Win"
-                  : "Loss"
+              (() => {
+                const homeScore = parseInt(result[0]);
+                const awayScore = parseInt(result[1]);
+                if (isNaN(homeScore) || isNaN(awayScore)) return "N/A";
+                if (i === 0) { // Home team
+                  return homeScore > awayScore ? "Win" : homeScore < awayScore ? "Loss" : "Draw";
+                } else { // Away team
+                  return awayScore > homeScore ? "Win" : awayScore < homeScore ? "Loss" : "Draw";
+                }
+              })()
             ); // win/loss
 
             res.push(match.date); // date
@@ -120,16 +123,17 @@ export async function getSchedule(url: string): Promise<Match[] | null> {
     return null;
   }
 }
+
 export function convertToDatetime(
   datetimeStr: string,
   returnType: "timestamp" | "date" = "timestamp",
   delay: number = 0,
-  delayType: "day" | "hours" = "day"
+  delayType: "days" | "hours" = "days"
 ): number | Date {
-  const datetimeObj = moment.tz(datetimeStr, "YYYY-MM-DD,hh:mm A", "CET");
+  const datetimeObj = moment.tz(datetimeStr, "YYYY-MM-DD,HH:mm", "CET");
 
-  // Add 2 hours
-  const utcDatetimeObj = datetimeObj.utc().add(delay, delayType);
+  // Add the specified delay
+  const utcDatetimeObj = datetimeObj.add(delay, delayType).utc();
 
   // Return based on the specified type
   if (returnType === "timestamp") {
